@@ -51,8 +51,8 @@ namespace AutoClicker.Helpers
             BlobCounter blobCounter = new BlobCounter
             {
                 FilterBlobs = true,
-                MinHeight = 20,
-                MinWidth = 5
+                MinHeight = 10,
+                MinWidth = 3
             };
 
             blobCounter.ProcessImage(image);

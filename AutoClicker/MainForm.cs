@@ -198,6 +198,7 @@ namespace AutoClicker
             List<CharacterAttributePosition> results = new List<CharacterAttributePosition>();
             using (Bitmap attributeFiltered = ImageProcessing.FilterImageForAttributePositions(bitmap))
             {
+                attributeFiltered.Save("filtered.png");
                 List<CharacterAttributePosition> detectedPositions = ImageProcessing.GetCharacterAttributePositions(attributeFiltered);
                 foreach (CharacterAttributePosition attribute in detectedPositions)
                 {

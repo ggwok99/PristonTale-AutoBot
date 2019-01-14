@@ -78,6 +78,7 @@ namespace AutoClicker.Strategies
 
         protected override void DoWork()
         {
+            AutoClickHandlers.SendKeyUp(_hWnd, Keys.A);
             Stop();
         }
     }

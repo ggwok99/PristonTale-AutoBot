@@ -107,6 +107,8 @@ namespace AutoClicker.Strategies
 
         protected override void DoWork()
         {
+            AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey, 50);
+            AutoClickHandlers.SendKeyUp(_hWnd, Keys.ControlKey, 50);
             Stop();
         }
     }

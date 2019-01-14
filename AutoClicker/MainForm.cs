@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AutoClicker
@@ -139,40 +140,57 @@ namespace AutoClicker
             if (chkFullScreen.Checked)
             {
                 User32.ShowWindow(intPtr, AutoClickHandlers.SW_MAXIMIZED);
+                Thread.Sleep(500);
             }
 
+            List<CharacterAttributePosition> attributePositions;
             using (Bitmap screenCapture = (Bitmap)ScreenCapture.CaptureWindow(intPtr))
             {
-                Master.Instance.PotPositions = GetCharacterAttributePositions(screenCapture);
-
-                CharacterAttributePosition hp = Master.Instance.PotPositions.Where(x => x.Type == AttributeType.HP).FirstOrDefault();
-                if (hp == null)
+                try
                 {
-                    MessageBox.Show("Error!");
-                    UpdateStatusStripLabel("Please analyze again, cannot detect HP bar.");
-                    return;
+                    attributePositions = GetCharacterAttributePositions(screenCapture);
                 }
-
-                CharacterAttributePosition mp = Master.Instance.PotPositions.Where(x => x.Type == AttributeType.MP).FirstOrDefault();
-                if (mp == null)
+                catch
                 {
                     MessageBox.Show("Error!");
-                    UpdateStatusStripLabel("Please analyze again, cannot detect MP bar.");
-                    return;
-                }
-
-                CharacterAttributePosition stm = Master.Instance.PotPositions.Where(x => x.Type == AttributeType.STM).FirstOrDefault();
-                if (stm == null)
-                {
-                    MessageBox.Show("Error!");
-                    UpdateStatusStripLabel("Please analyze again, cannot detect STM bar.");
+                    UpdateStatusStripLabel("Please analyze again, cannot detect HP/MP/STM bar.");
                     return;
                 }
             }
 
+            CharacterAttributePosition hp = attributePositions.Where(x => x.Type == AttributeType.HP).FirstOrDefault();
+            if (hp == null)
+            {
+                MessageBox.Show("Error!");
+                UpdateStatusStripLabel("Please analyze again, cannot detect HP bar.");
+                return;
+            }
+
+            CharacterAttributePosition mp = attributePositions.Where(x => x.Type == AttributeType.MP).FirstOrDefault();
+            if (mp == null)
+            {
+                MessageBox.Show("Error!");
+                UpdateStatusStripLabel("Please analyze again, cannot detect MP bar.");
+                return;
+            }
+
+            CharacterAttributePosition stm = attributePositions.Where(x => x.Type == AttributeType.STM).FirstOrDefault();
+            if (stm == null || stm.Position.Left > mp.Position.Left)
+            {
+                MessageBox.Show("Error!");
+                UpdateStatusStripLabel("Please analyze again, cannot detect STM bar.");
+                return;
+            }
+
+            Master.Instance.PotPositions = attributePositions;
             Master.Instance.ScreenResolution = new ScreenResolution(txtScreenResolutionX.Text, txtScreenResolutionY.Text);
 
             UpdateStatusStripLabel("Successfully Analyzed.");
+
+            if (chkFullScreen.Checked)
+            {
+                User32.SetForegroundWindow(Handle);
+            }
         }
 
         private static List<CharacterAttributePosition> GetCharacterAttributePositions(Bitmap bitmap)
@@ -184,11 +202,18 @@ namespace AutoClicker
                 foreach (CharacterAttributePosition attribute in detectedPositions)
                 {
                     CharacterAttributePosition duplicate = results.FirstOrDefault(x => x.Equals(attribute));
-                    if (duplicate == null && results.Count < 3)
+                    if (duplicate == null)
                     {
                         results.Add(attribute);
                     }
                 }
+            }
+
+            List<CharacterAttributePosition> stm = results.Where(x => x.Type == AttributeType.STM).ToList();
+            if (stm.Count > 1)
+            {
+                CharacterAttributePosition mp = results.FirstOrDefault(x => x.Type == AttributeType.MP);
+                results.Remove(stm.FirstOrDefault(x => x.Position.Left > mp.Position.Left));
             }
 
             results.ForEach(x =>
@@ -280,7 +305,7 @@ namespace AutoClicker
             IntPtr intPtr = IntPtr.Zero;
             if (lbxProcess.SelectedItem.ToString().Contains(" - paired"))
             {
-                intPtr  = new IntPtr(Convert.ToInt32(lbxProcess.SelectedItem.ToString().Replace(" - paired", string.Empty)));
+                intPtr = new IntPtr(Convert.ToInt32(lbxProcess.SelectedItem.ToString().Replace(" - paired", string.Empty)));
             }
             else
             {

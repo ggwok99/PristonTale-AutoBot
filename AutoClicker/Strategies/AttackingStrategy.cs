@@ -162,15 +162,14 @@ namespace AutoClicker.Strategies
             return rectangle.Center;
         }
 
-        private bool ProcessMeleeAttack(BlobCountingObjectsProcessing motionProcessing, Point point)
+        private bool ProcessMeleeAttack(BlobCountingObjectsProcessing motionProcessing, Point center)
         {
             List<double> distances = new List<double>();
             double minDistance = 0;
-            Point targetPoint = point;
+            Point targetPoint = center;
             motionProcessing.ObjectRectangles.ToList().ForEach(x =>
             {
                 RECT rect = x;
-                Point center = Master.Instance.ScreenResolution.Center;
                 double temp = (rect.Center.X - center.X) ^ 2 + (rect.Center.Y - center.Y) ^ 2;
                 double distance = Math.Sqrt(temp);
                 distances.Add(distance);
@@ -181,7 +180,7 @@ namespace AutoClicker.Strategies
                 }
             });
 
-            if (targetPoint.X == point.X && targetPoint.Y == point.Y)
+            if (targetPoint.X == center.X && targetPoint.Y == center.Y)
             {
                 return false;
             }

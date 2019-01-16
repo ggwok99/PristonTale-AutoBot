@@ -2,8 +2,9 @@
 {
     public enum AttackStyleType
     {
-        Attack = 0,
-        Spell = 1,
-        Training = 2
+        Melee_Attack = 0,
+        Range_Attack = 1,
+        Spell_With_Target = 2,
+        Spell_AOE = 3
     }
 }

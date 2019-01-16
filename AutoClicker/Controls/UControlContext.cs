@@ -244,9 +244,6 @@ namespace AutoClicker.Controls
         private dynamic GetAttackDataFromForm()
         {
             dynamic data = new ExpandoObject();
-            int.TryParse(txtTargetArea.Text, out int targetArea);
-            data.TargetArea = targetArea;
-
             Enum.TryParse(cbxAttackStyle.SelectedValue.ToString(), out AttackStyleType attackStyle);
             data.Style = attackStyle;
 
@@ -256,7 +253,6 @@ namespace AutoClicker.Controls
         }
         private void LoadAttackData(dynamic data)
         {
-            txtTargetArea.Text = data.TargetArea;
             cbxAttackStyle.SelectedIndex = (int)data.Style.Value;
             cbxMainSkill.SelectedItem = (Keys)data.MainSkillHotkey.Value;
         }
@@ -365,8 +361,7 @@ namespace AutoClicker.Controls
         private dynamic GetPickItemDataFromForm()
         {
             dynamic data = new ExpandoObject();
-            int.TryParse(txtTargetArea.Text, out int targetArea);
-            data.TargetArea = targetArea;
+            data.TargetArea = 35;
             return data;
         }
         #endregion

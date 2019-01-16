@@ -48,13 +48,13 @@
             this.btnAnalyze = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.grpGeneral = new System.Windows.Forms.GroupBox();
+            this.chkFullScreen = new System.Windows.Forms.CheckBox();
             this.lblClientName = new System.Windows.Forms.Label();
             this.txtScreenResolutionY = new System.Windows.Forms.TextBox();
             this.txtScreenResolutionX = new System.Windows.Forms.TextBox();
             this.lblResolutionDivider = new System.Windows.Forms.Label();
             this.lblResolution = new System.Windows.Forms.Label();
             this.txtClientName = new System.Windows.Forms.TextBox();
-            this.chkFullScreen = new System.Windows.Forms.CheckBox();
             this.statusStrip.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.helpPanel.SuspendLayout();
@@ -167,7 +167,7 @@
             // 
             // btnPairProcess
             // 
-            this.btnPairProcess.Location = new System.Drawing.Point(468, 67);
+            this.btnPairProcess.Location = new System.Drawing.Point(486, 67);
             this.btnPairProcess.Name = "btnPairProcess";
             this.btnPairProcess.Size = new System.Drawing.Size(60, 30);
             this.btnPairProcess.TabIndex = 4;
@@ -177,7 +177,7 @@
             // 
             // btnNewUControl
             // 
-            this.btnNewUControl.Location = new System.Drawing.Point(468, 31);
+            this.btnNewUControl.Location = new System.Drawing.Point(486, 31);
             this.btnNewUControl.Name = "btnNewUControl";
             this.btnNewUControl.Size = new System.Drawing.Size(60, 30);
             this.btnNewUControl.TabIndex = 3;
@@ -189,14 +189,14 @@
             // 
             this.lbxUControl.FormattingEnabled = true;
             this.lbxUControl.ItemHeight = 18;
-            this.lbxUControl.Location = new System.Drawing.Point(263, 31);
+            this.lbxUControl.Location = new System.Drawing.Point(284, 31);
             this.lbxUControl.Name = "lbxUControl";
-            this.lbxUControl.Size = new System.Drawing.Size(178, 76);
+            this.lbxUControl.Size = new System.Drawing.Size(196, 76);
             this.lbxUControl.TabIndex = 2;
             // 
             // btnRefreshProcess
             // 
-            this.btnRefreshProcess.Location = new System.Drawing.Point(23, 45);
+            this.btnRefreshProcess.Location = new System.Drawing.Point(6, 48);
             this.btnRefreshProcess.Name = "btnRefreshProcess";
             this.btnRefreshProcess.Size = new System.Drawing.Size(92, 30);
             this.btnRefreshProcess.TabIndex = 0;
@@ -208,9 +208,9 @@
             // 
             this.lbxProcess.FormattingEnabled = true;
             this.lbxProcess.ItemHeight = 18;
-            this.lbxProcess.Location = new System.Drawing.Point(141, 31);
+            this.lbxProcess.Location = new System.Drawing.Point(104, 31);
             this.lbxProcess.Name = "lbxProcess";
-            this.lbxProcess.Size = new System.Drawing.Size(116, 76);
+            this.lbxProcess.Size = new System.Drawing.Size(174, 76);
             this.lbxProcess.TabIndex = 1;
             // 
             // btnAnalyze
@@ -249,6 +249,18 @@
             this.grpGeneral.TabIndex = 0;
             this.grpGeneral.TabStop = false;
             this.grpGeneral.Text = "General";
+            // 
+            // chkFullScreen
+            // 
+            this.chkFullScreen.AutoSize = true;
+            this.chkFullScreen.Checked = true;
+            this.chkFullScreen.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkFullScreen.Location = new System.Drawing.Point(20, 85);
+            this.chkFullScreen.Name = "chkFullScreen";
+            this.chkFullScreen.Size = new System.Drawing.Size(238, 22);
+            this.chkFullScreen.TabIndex = 5;
+            this.chkFullScreen.Text = "Fullscreen when use AutoBot";
+            this.chkFullScreen.UseVisualStyleBackColor = true;
             // 
             // lblClientName
             // 
@@ -308,18 +320,6 @@
             this.txtClientName.TabStop = false;
             this.txtClientName.Text = "Priston Tale";
             this.txtClientName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // chkFullScreen
-            // 
-            this.chkFullScreen.AutoSize = true;
-            this.chkFullScreen.Checked = true;
-            this.chkFullScreen.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkFullScreen.Location = new System.Drawing.Point(20, 85);
-            this.chkFullScreen.Name = "chkFullScreen";
-            this.chkFullScreen.Size = new System.Drawing.Size(238, 22);
-            this.chkFullScreen.TabIndex = 5;
-            this.chkFullScreen.Text = "Fullscreen when use AutoBot";
-            this.chkFullScreen.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 

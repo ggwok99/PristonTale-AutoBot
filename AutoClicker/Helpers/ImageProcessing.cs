@@ -164,6 +164,15 @@ namespace AutoClicker.Helpers
             return results.FirstOrDefault();
         }
 
+        public static Rectangle GetRectangleAreaFromCenter(Bitmap sourceImage, int targetArea)
+        {
+            int width = sourceImage.Width * targetArea / 100;
+            int height = sourceImage.Height * targetArea / 100;
+            int x = (sourceImage.Width / 2) - (width / 2);
+            int y = (sourceImage.Height / 2) - (height / 2);
+            return new Rectangle(new Point(x, y), new Size(width, height));
+        }
+
         private static TemplateMatch[] TryExhaustiveTemplateMatchingWithExactOneResult(Bitmap template, Bitmap filtered)
         {
             TemplateMatch[] templateMatches;

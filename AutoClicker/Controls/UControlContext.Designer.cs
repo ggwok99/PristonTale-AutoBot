@@ -31,8 +31,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cbxMainSkill = new System.Windows.Forms.ComboBox();
             this.lblMainSkill = new System.Windows.Forms.Label();
-            this.txtTargetArea = new System.Windows.Forms.TextBox();
-            this.lblTargetArea = new System.Windows.Forms.Label();
             this.lblAttackStyle = new System.Windows.Forms.Label();
             this.cbxAttackStyle = new System.Windows.Forms.ComboBox();
             this.grpAttributeControls = new System.Windows.Forms.GroupBox();
@@ -82,8 +80,6 @@
             // 
             this.groupBox1.Controls.Add(this.cbxMainSkill);
             this.groupBox1.Controls.Add(this.lblMainSkill);
-            this.groupBox1.Controls.Add(this.txtTargetArea);
-            this.groupBox1.Controls.Add(this.lblTargetArea);
             this.groupBox1.Controls.Add(this.lblAttackStyle);
             this.groupBox1.Controls.Add(this.cbxAttackStyle);
             this.groupBox1.Location = new System.Drawing.Point(21, 94);
@@ -110,26 +106,6 @@
             this.lblMainSkill.Size = new System.Drawing.Size(119, 17);
             this.lblMainSkill.TabIndex = 8;
             this.lblMainSkill.Text = "Main Skill Hotkey:";
-            // 
-            // txtTargetArea
-            // 
-            this.txtTargetArea.Location = new System.Drawing.Point(181, 65);
-            this.txtTargetArea.MaxLength = 2;
-            this.txtTargetArea.Name = "txtTargetArea";
-            this.txtTargetArea.Size = new System.Drawing.Size(29, 22);
-            this.txtTargetArea.TabIndex = 2;
-            this.txtTargetArea.Text = "35";
-            this.txtTargetArea.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtTargetArea.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FilterNumericInput);
-            // 
-            // lblTargetArea
-            // 
-            this.lblTargetArea.AutoSize = true;
-            this.lblTargetArea.Location = new System.Drawing.Point(12, 68);
-            this.lblTargetArea.Name = "lblTargetArea";
-            this.lblTargetArea.Size = new System.Drawing.Size(163, 17);
-            this.lblTargetArea.TabIndex = 2;
-            this.lblTargetArea.Text = "Target Area (% Screen):";
             // 
             // lblAttackStyle
             // 
@@ -604,8 +580,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox cbxMainSkill;
         private System.Windows.Forms.Label lblMainSkill;
-        private System.Windows.Forms.TextBox txtTargetArea;
-        private System.Windows.Forms.Label lblTargetArea;
         private System.Windows.Forms.Label lblAttackStyle;
         private System.Windows.Forms.ComboBox cbxAttackStyle;
         private System.Windows.Forms.GroupBox grpAttributeControls;

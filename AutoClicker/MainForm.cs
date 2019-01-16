@@ -1,4 +1,5 @@
-﻿using AutoClicker.Controls;
+﻿using AForge.Vision.Motion;
+using AutoClicker.Controls;
 using AutoClicker.Enums;
 using AutoClicker.Helpers;
 using AutoClicker.Models;
@@ -302,7 +303,7 @@ namespace AutoClicker
 
             TabPage tbp = tabUControl.TabPages[lbxUControl.SelectedIndex];
             UControlContext context = (UControlContext)tbp.Controls[0];
-            IntPtr intPtr = IntPtr.Zero;
+            IntPtr intPtr;
             if (lbxProcess.SelectedItem.ToString().Contains(" - paired"))
             {
                 intPtr = new IntPtr(Convert.ToInt32(lbxProcess.SelectedItem.ToString().Replace(" - paired", string.Empty)));

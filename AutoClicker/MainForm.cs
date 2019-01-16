@@ -41,6 +41,9 @@ namespace AutoClicker
                 CustomDataObject data = JsonConvert.DeserializeObject<CustomDataObject>(json);
                 txtClientName.Text = data.ClientName;
 
+                chkFullScreen.Checked = data.FullScreenWhenAuto;
+                chkFullScreen.CheckState = data.FullScreenWhenAuto ? CheckState.Checked : CheckState.Unchecked;
+
                 txtScreenResolutionX.Text = data.ScreenResolution.X.ToString();
                 txtScreenResolutionY.Text = data.ScreenResolution.Y.ToString();
                 Master.Instance.ScreenResolution = data.ScreenResolution;
@@ -94,6 +97,7 @@ namespace AutoClicker
                 CustomDataObject data = new CustomDataObject
                 {
                     ClientName = txtClientName.Text,
+                    FullScreenWhenAuto = chkFullScreen.Checked,
                     ScreenResolution = new ScreenResolution(txtScreenResolutionX.Text, txtScreenResolutionY.Text),
                     Attributes = Master.Instance.PotPositions,
                     Profiles = GetTabsData()

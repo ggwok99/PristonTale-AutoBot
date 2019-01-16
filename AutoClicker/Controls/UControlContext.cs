@@ -267,9 +267,9 @@ namespace AutoClicker.Controls
         private dynamic GetPotRefillData(RECT hp, RECT mp, RECT stm)
         {
             dynamic data = new ExpandoObject();
-            Point hpPoint = ScaleDownToClientPoint(hp.Center);
-            Point mpPoint = ScaleDownToClientPoint(mp.Center);
-            Point stmPoint = ScaleDownToClientPoint(stm.Center);
+            Point hpPoint = hp.Center.ScaleDownToClientPoint(HWnd);
+            Point mpPoint = mp.Center.ScaleDownToClientPoint(HWnd);
+            Point stmPoint = stm.Center.ScaleDownToClientPoint(HWnd);
             data.PotPosition = new PotPosition(hpPoint, mpPoint, stmPoint);
             data.KeyHP = (Keys)keyPotHP.Value.ToString()[0];
             data.KeyMP = (Keys)keyPotMP.Value.ToString()[0];
@@ -277,14 +277,6 @@ namespace AutoClicker.Controls
             int.TryParse(txtPotRefillTimeOut.Text, out int timeOut);
             data.TimeOut = timeOut;
             return data;
-        }
-        private Point ScaleDownToClientPoint(Point point)
-        {
-            RECT windowRect = new RECT();
-            User32.GetWindowRect(HWnd, ref windowRect);
-            decimal xMultiplier = (decimal)Master.Instance.ScreenResolution.X / windowRect.Width;
-            decimal yMultiplier = (decimal)Master.Instance.ScreenResolution.Y / windowRect.Height;
-            return new Point((int)(point.X * xMultiplier), (int)(point.Y * yMultiplier));
         }
         private void BtnPotPositionCapture_Click(object sender, EventArgs e)
         {

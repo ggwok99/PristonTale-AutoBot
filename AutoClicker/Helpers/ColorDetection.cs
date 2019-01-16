@@ -13,7 +13,6 @@ namespace AutoClicker.Helpers
             Color.Black,
             Color.Pink,
             Color.Gray,
-            Color.Brown,
             Color.Orange,
             Color.Purple,
             Color.Green,

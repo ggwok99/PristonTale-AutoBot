@@ -24,7 +24,7 @@ namespace AutoClicker.Strategies
 
         protected override double TimeOutInSecond()
         {
-            return .5;
+            return .75;
         }
 
         public override MainStreamState ThisState()
@@ -62,10 +62,8 @@ namespace AutoClicker.Strategies
 
             BlobCountingObjectsProcessing motionProcessing = new BlobCountingObjectsProcessing(20, 50);
             MotionDetector detector = new MotionDetector(new TwoFramesDifferenceDetector(), motionProcessing);
-            Point center;
             using (Bitmap screenCapture = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
             {
-                center = new Point(screenCapture.Width / 2, screenCapture.Height / 2);
                 detector.MotionZones = new Rectangle[] { ImageProcessing.GetRectangleAreaFromCenter(screenCapture, 85) };
             }
 
@@ -88,6 +86,7 @@ namespace AutoClicker.Strategies
                                         break;
                                     }
 
+                                    Point center = new Point(screenCapture.Width / 2, screenCapture.Height / 2);
                                     found = ProcessMeleeAttack(motionProcessing, center);
                                     break;
                                 }
@@ -134,21 +133,23 @@ namespace AutoClicker.Strategies
 
         private bool ProcessSpellWithTarget(BlobCountingObjectsProcessing motionProcessing)
         {
-            int count = motionProcessing.ObjectsCount;
-            int index = 0;
-            if (count > 1)
-            {
-                index = AutoClickHandlers.Random(0, count - 1);
-            }
-
-            RECT rectangle = motionProcessing.ObjectRectangles[index];
+            Point point = GetRandomTargetPoint(motionProcessing);
             AutoClickHandlers.SendKeyDown(_hWnd, Keys.ShiftKey);
-            AutoClickHandlers.RightClickOnPoint(_hWnd, rectangle.Center);
+            AutoClickHandlers.RightClickOnPoint(_hWnd, point.ScaleDownToClientPoint(_hWnd));
             AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey, 50);
             return true;
         }
 
         private bool ProcessRangeAttack(BlobCountingObjectsProcessing motionProcessing)
+        {
+            Point point = GetRandomTargetPoint(motionProcessing);
+            AutoClickHandlers.SendKeyDown(_hWnd, Keys.ShiftKey);
+            AutoClickHandlers.LeftClickOnPoint(_hWnd, point.ScaleDownToClientPoint(_hWnd));
+            AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey, 50);
+            return true;
+        }
+
+        private static Point GetRandomTargetPoint(BlobCountingObjectsProcessing motionProcessing)
         {
             int count = motionProcessing.ObjectsCount;
             int index = 0;
@@ -158,10 +159,7 @@ namespace AutoClicker.Strategies
             }
 
             RECT rectangle = motionProcessing.ObjectRectangles[index];
-            AutoClickHandlers.SendKeyDown(_hWnd, Keys.ShiftKey);
-            AutoClickHandlers.LeftClickOnPoint(_hWnd, rectangle.Center);
-            AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey, 50);
-            return true;
+            return rectangle.Center;
         }
 
         private bool ProcessMeleeAttack(BlobCountingObjectsProcessing motionProcessing, Point point)
@@ -189,7 +187,7 @@ namespace AutoClicker.Strategies
             }
 
             AutoClickHandlers.SendKeyDown(_hWnd, Keys.ShiftKey);
-            AutoClickHandlers.LeftClickOnPoint(_hWnd, targetPoint);
+            AutoClickHandlers.LeftClickOnPoint(_hWnd, targetPoint.ScaleDownToClientPoint(_hWnd));
             AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey, 50);
             return true;
         }

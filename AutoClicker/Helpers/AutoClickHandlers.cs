@@ -116,5 +116,19 @@ namespace AutoClicker.Helpers
             Random r = new Random(Guid.NewGuid().GetHashCode());
             return r.Next(Convert.ToInt32(min), Convert.ToInt32(max));
         }
+
+        internal static void LeftClickOnPoint(IntPtr hWnd, object p)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Point ScaleDownToClientPoint(this Point point, IntPtr hWnd)
+        {
+            RECT windowRect = new RECT();
+            User32.GetWindowRect(hWnd, ref windowRect);
+            decimal xMultiplier = (decimal)Master.Instance.ScreenResolution.X / windowRect.Width;
+            decimal yMultiplier = (decimal)Master.Instance.ScreenResolution.Y / windowRect.Height;
+            return new Point((int)(point.X * xMultiplier), (int)(point.Y * yMultiplier));
+        }
     }
 }

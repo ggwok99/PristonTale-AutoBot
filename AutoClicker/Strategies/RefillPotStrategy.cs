@@ -15,7 +15,6 @@ namespace AutoClicker.Strategies
         protected Keys KeyMP { get; set; }
         protected Keys KeySTM { get; set; }
         protected int TimeOut { get; set; }
-        protected int _currentTimeout = 0;
 
         public override void LoadData(dynamic data)
         {
@@ -47,7 +46,7 @@ namespace AutoClicker.Strategies
 
         protected override double TimeOutInSecond()
         {
-            return 1;
+            return TimeOut;
         }
 
         public override MainStreamState ThisState()
@@ -78,14 +77,8 @@ namespace AutoClicker.Strategies
 
         protected override void DoWork()
         {
-            if (_currentTimeout > 0)
-            {
-                _currentTimeout--;
-                return;
-            }
-
             FireRequestMainStream();
-            Thread.Sleep(100);
+            Thread.Sleep(500);
 
             if (!_mainStream)
             {
@@ -120,8 +113,6 @@ namespace AutoClicker.Strategies
             // Close inventory
             AutoClickHandlers.SendKeyPress(_hWnd, Keys.Space, 300);
             AutoClickHandlers.SendKeyPress(_hWnd, Keys.Space, 100);
-
-            _currentTimeout = TimeOut;
 
             FireReleaseMainStream();
         }

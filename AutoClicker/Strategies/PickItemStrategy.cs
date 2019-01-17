@@ -21,7 +21,7 @@ namespace AutoClicker.Strategies
 
         protected override double TimeOutInSecond()
         {
-            return 10;
+            return 20;
         }
 
         public override MainStreamState ThisState()

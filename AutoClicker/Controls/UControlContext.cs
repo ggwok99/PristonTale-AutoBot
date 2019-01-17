@@ -19,8 +19,9 @@ namespace AutoClicker.Controls
         private dynamic refillPotData = null;
         public IntPtr HWnd { get; set; }
         public ContextState State { get; set; }
+        private bool _isFullScreen;
 
-        public UControlContext(IntPtr intPtr)
+        public UControlContext(IntPtr intPtr, bool fullScreen)
         {
             InitializeComponent();
             cbxAttackStyle.DataSource = Enum.GetValues(typeof(AttackStyleType));
@@ -31,6 +32,8 @@ namespace AutoClicker.Controls
             HWnd = intPtr;
 
             State = new ContextStoppedState(intPtr);
+
+            _isFullScreen = fullScreen;
         }
 
         private void UControl_Load(object sender, EventArgs e)
@@ -294,33 +297,42 @@ namespace AutoClicker.Controls
         }
         private void OnAreaSelected(object sender, EventArgs e)
         {
-            Rectangle increasedRect = new Rectangle(SnippingTool.Area.Location, new Size((int)(SnippingTool.Area.Size.Width * 1.1), (int)(SnippingTool.Area.Size.Height * 1.35)));
+            RECT windowRect = new RECT();
+            User32.GetWindowRect(HWnd, ref windowRect);
+
+            int increasedWidth = (int)(SnippingTool.Area.Size.Width * 1.1);
+            int increasedHeight = (int)(SnippingTool.Area.Size.Height * 1.35);
+            Rectangle increasedRect = _isFullScreen ? new Rectangle(SnippingTool.Area.Location.X, SnippingTool.Area.Location.Y, increasedWidth, increasedHeight)
+                : new Rectangle(SnippingTool.Area.Location.X - windowRect.X, SnippingTool.Area.Location.Y - windowRect.Y, increasedWidth, increasedHeight);
+
             using (Bitmap bitmap = (Bitmap)ScreenCapture.CapturePartialWindow(HWnd, increasedRect))
             {
                 RECT hpRECT = ImageProcessing.GetMatchingImageLocation(bitmap, AttributeType.HP);
-                MainForm form = Parent.Parent.Parent.Parent as MainForm;
                 if (hpRECT.Width == 0 || hpRECT.Height == 0)
                 {
+                    MainForm form = Parent.Parent.Parent.Parent as MainForm;
                     form.StatusLabel.Text = "Status: Error! Cannot find life potion. Please try mystic size.";
                     return;
                 }
-                RECT absoluteLifeRECT = GetAbsoluteRectBySnippingTool(hpRECT);
+                RECT absoluteLifeRECT = _isFullScreen ? GetAbsoluteRectBySnippingTool(hpRECT) : GetAbsoluteRectWhenNotFullScreen(hpRECT, HWnd);
 
                 RECT mpRECT = ImageProcessing.GetMatchingImageLocation(bitmap, AttributeType.MP);
                 if (mpRECT.Width == 0 || mpRECT.Height == 0)
                 {
+                    MainForm form = Parent.Parent.Parent.Parent as MainForm;
                     form.StatusLabel.Text = "Status: Error! Cannot find mana potion. Please try mystic size.";
                     return;
                 }
-                RECT absoluteManaRECT = GetAbsoluteRectBySnippingTool(mpRECT);
+                RECT absoluteManaRECT = _isFullScreen ? GetAbsoluteRectBySnippingTool(mpRECT) : GetAbsoluteRectWhenNotFullScreen(mpRECT, HWnd);
 
                 RECT stmRECT = ImageProcessing.GetMatchingImageLocation(bitmap, AttributeType.STM);
                 if (stmRECT.Width == 0 || stmRECT.Height == 0)
                 {
+                    MainForm form = Parent.Parent.Parent.Parent as MainForm;
                     form.StatusLabel.Text = "Status: Error! Cannot find stm potion. Please try mystic size.";
                     return;
                 }
-                RECT absoluteSTMRECT = GetAbsoluteRectBySnippingTool(stmRECT);
+                RECT absoluteSTMRECT = _isFullScreen ? GetAbsoluteRectBySnippingTool(stmRECT) : GetAbsoluteRectWhenNotFullScreen(mpRECT, HWnd);
 
                 refillPotData = GetPotRefillData(absoluteLifeRECT, absoluteManaRECT, absoluteSTMRECT);
             }
@@ -335,6 +347,13 @@ namespace AutoClicker.Controls
         private static RECT GetAbsoluteRectBySnippingTool(RECT rECT)
         {
             return new Rectangle(SnippingTool.Area.Location.X + rECT.X, SnippingTool.Area.Location.Y + rECT.Y, rECT.Width, rECT.Height);
+        }
+        private static RECT GetAbsoluteRectWhenNotFullScreen(RECT rECT, IntPtr intPtr)
+        {
+            RECT windowRect = new RECT();
+            User32.GetWindowRect(intPtr, ref windowRect);
+            RECT absoluteRect = GetAbsoluteRectBySnippingTool(rECT);
+            return new Rectangle(absoluteRect.X - windowRect.X, absoluteRect.Y - windowRect.Y, absoluteRect.Width, absoluteRect.Height);
         }
         #endregion
 

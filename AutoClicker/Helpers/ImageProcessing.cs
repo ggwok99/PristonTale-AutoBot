@@ -133,8 +133,6 @@ namespace AutoClicker.Helpers
 
         public static RECT GetMatchingImageLocation(Bitmap sourceImage, AttributeType type)
         {
-            List<RECT> results = new List<RECT>();
-
             Bitmap template;
             Bitmap filtered;
             switch (type)
@@ -153,15 +151,17 @@ namespace AutoClicker.Helpers
                     break;
             }
 
-            TemplateMatch[] matchings = TryExhaustiveTemplateMatchingWithExactOneResult(template, filtered);
-            foreach (TemplateMatch m in matchings)
-            {
-                results.Add(m.Rectangle);
-            }
+            TemplateMatch matching = TryExhaustiveTemplateMatchingWithExactOneResult(template, filtered);
+
             template.Dispose();
             filtered.Dispose();
 
-            return results.FirstOrDefault();
+            if (matching == null)
+            {
+                return new RECT();
+            }
+
+            return matching.Rectangle;
         }
 
         public static Rectangle GetRectangleAreaFromCenter(Bitmap sourceImage, int targetArea)
@@ -173,14 +173,18 @@ namespace AutoClicker.Helpers
             return new Rectangle(new Point(x, y), new Size(width, height));
         }
 
-        private static TemplateMatch[] TryExhaustiveTemplateMatchingWithExactOneResult(Bitmap template, Bitmap filtered)
+        private static TemplateMatch TryExhaustiveTemplateMatchingWithExactOneResult(Bitmap template, Bitmap filtered)
         {
-            TemplateMatch[] templateMatches;
-
-            int i = 50;
             float similarity = 0.965f;
-            do
+            TemplateMatch[] templateMatches = ExhaustiveTemplateMatching(template, filtered, similarity);
+
+            for (int i = 0; i < 50; i++)
             {
+                if (templateMatches.Length == 1)
+                {
+                    break;
+                }
+
                 templateMatches = ExhaustiveTemplateMatching(template, filtered, similarity);
                 if (templateMatches.Length == 1)
                 {
@@ -198,11 +202,9 @@ namespace AutoClicker.Helpers
                 {
                     similarity -= .005f;
                 }
+            }
 
-                i--;
-            } while (i > 0 && (templateMatches.Length != 1 || similarity > .8f || similarity < 1));
-
-            return templateMatches;
+            return templateMatches.FirstOrDefault(m => m.Similarity == templateMatches.Max(x => x.Similarity));
         }
 
         private static TemplateMatch[] ExhaustiveTemplateMatching(Bitmap template, Bitmap filtered, float similarity)
@@ -268,6 +270,18 @@ namespace AutoClicker.Helpers
             {
                 CenterColor = new RGB(Color.Black),
                 Radius = 25,
+                FillColor = new RGB(Color.White)
+            };
+            colorFilter.ApplyInPlace(image);
+            return image;
+        }
+
+        public static Bitmap FilterForAutoAttacking(this Bitmap image)
+        {
+            EuclideanColorFiltering colorFilter = new EuclideanColorFiltering
+            {
+                CenterColor = new RGB(Color.Black),
+                Radius = 275,
                 FillColor = new RGB(Color.White)
             };
             colorFilter.ApplyInPlace(image);

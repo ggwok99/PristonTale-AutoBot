@@ -1,10 +1,8 @@
-﻿using AForge.Imaging.Filters;
-using AForge.Vision.Motion;
+﻿using AForge.Vision.Motion;
 using AutoClicker.Enums;
 using AutoClicker.Helpers;
 using AutoClicker.Models;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -23,7 +21,7 @@ namespace AutoClicker.Strategies
 
         protected override double TimeOutInSecond()
         {
-            return 15;
+            return 10;
         }
 
         public override MainStreamState ThisState()
@@ -64,35 +62,26 @@ namespace AutoClicker.Strategies
 
             BlobCountingObjectsProcessing motionProcessing = new BlobCountingObjectsProcessing(5, 2);
             MotionDetector detector = new MotionDetector(new TwoFramesDifferenceDetector(), motionProcessing);
-            EuclideanColorFiltering colorFilter = new EuclideanColorFiltering
-            {
-                CenterColor = new AForge.Imaging.RGB(Color.Black),
-                Radius = 25,
-                FillColor = new AForge.Imaging.RGB(Color.White)
-            };
 
             int i = 0;
             while (i < 5)
             {
                 using (Bitmap backgroundFrame = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
                 {
-                    detector.MotionZones = new Rectangle[] { ImageProcessing.GetRectangleAreaFromCenter(backgroundFrame, 20) };
+                    detector.MotionZones = new Rectangle[] { ImageProcessing.GetRectangleAreaFromCenter(backgroundFrame, 35) };
 
-                    colorFilter.ApplyInPlace(backgroundFrame);
-                    detector.ProcessFrame(backgroundFrame);
+                    detector.ProcessFrame(backgroundFrame.FilterForBlackTags());
 
                     AutoClickHandlers.SendKeyDown(_hWnd, Keys.A);
 
                     Thread.Sleep(200);
                     using (Bitmap currentFrame = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
                     {
-                        colorFilter.ApplyInPlace(currentFrame);
-
-                        if (detector.ProcessFrame(currentFrame) > 0.0002 && motionProcessing.ObjectsCount >= 1)
+                        if (detector.ProcessFrame(currentFrame.FilterForBlackTags()) > 0.0002 && motionProcessing.ObjectsCount >= 1)
                         {
                             RECT rect = motionProcessing.ObjectRectangles.FirstOrDefault();
                             AutoClickHandlers.LeftClickOnPoint(_hWnd, rect.Center.ScaleDownToClientPoint(_hWnd));
-                            Thread.Sleep(500);
+                            Thread.Sleep(250);
                         }
                         else
                         {

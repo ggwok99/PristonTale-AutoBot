@@ -124,6 +124,12 @@
         "Entry"
         {
         "MsmKey" = "8:_398785D2107CEBFD0B28A18E7EA2C5F9"
+        "OwnerKey" = "8:_7E9BA2F787795BF310A09A79C12345FA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_398785D2107CEBFD0B28A18E7EA2C5F9"
         "OwnerKey" = "8:_83568E88E998E06530D8642AEA2C692E"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -257,6 +263,12 @@
         {
         "MsmKey" = "8:_7B2E1570416AB4C925F3F14183DC96C5"
         "OwnerKey" = "8:_6DB6B61774C3657ECD23863DED906A88"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7E9BA2F787795BF310A09A79C12345FA"
+        "OwnerKey" = "8:_F8E1F8C2E5D74E7EB0575A7727D4941A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -441,6 +453,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D312D1C222FB0E62C2159FD7D1A06A38"
+        "OwnerKey" = "8:_7E9BA2F787795BF310A09A79C12345FA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D4068D022B79C2486962180DE7EFBB13"
         "OwnerKey" = "8:_6DB6B61774C3657ECD23863DED906A88"
         "MsmSig" = "8:_UNDEFINED"
@@ -599,6 +617,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_9216099C6D03F23FB645F39E69BCE6D6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_7E9BA2F787795BF310A09A79C12345FA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2161,6 +2185,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7E9BA2F787795BF310A09A79C12345FA"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:AForge.Vision, Version=2.2.5.0, Culture=neutral, PublicKeyToken=b612fa915eefaa06, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_7E9BA2F787795BF310A09A79C12345FA"
+                    {
+                    "Name" = "8:AForge.Vision.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:AForge.Vision.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_25DE047A02624C8BA0087D4F835350F8"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_83568E88E998E06530D8642AEA2C692E"
             {
             "AssemblyRegister" = "3:1"
@@ -3435,15 +3490,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PristonTale AutoBot"
-        "ProductCode" = "8:{F79F025C-8C55-4C5B-AE9B-5FB3E125DBFE}"
-        "PackageCode" = "8:{3D0B3D12-8FB3-4B05-9B4C-8ACBDE97EAC7}"
+        "ProductCode" = "8:{3DE01303-606B-45DD-9026-95F4FFE2DA4A}"
+        "PackageCode" = "8:{15607422-1691-4041-B274-36A0C7CB8BC7}"
         "UpgradeCode" = "8:{F87C0E9C-3BB5-48DB-9BA2-175CE93A2D9A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.1"
         "Manufacturer" = "8:PristonTale AutoBot"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -3971,7 +4026,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F8E1F8C2E5D74E7EB0575A7727D4941A"
             {
-            "SourcePath" = "8:..\\AutoClicker\\obj\\Debug\\AutoClicker.exe"
+            "SourcePath" = "8:..\\AutoClicker\\obj\\Release\\AutoClicker.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_25DE047A02624C8BA0087D4F835350F8"

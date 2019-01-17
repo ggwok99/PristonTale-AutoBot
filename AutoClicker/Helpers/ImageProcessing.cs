@@ -261,5 +261,17 @@ namespace AutoClicker.Helpers
                 return clone;
             }
         }
+
+        public static Bitmap FilterForBlackTags(this Bitmap image)
+        {
+            EuclideanColorFiltering colorFilter = new EuclideanColorFiltering
+            {
+                CenterColor = new RGB(Color.Black),
+                Radius = 25,
+                FillColor = new RGB(Color.White)
+            };
+            colorFilter.ApplyInPlace(image);
+            return image;
+        }
     }
 }

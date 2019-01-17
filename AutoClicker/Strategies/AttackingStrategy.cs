@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AutoClicker.Strategies
@@ -82,7 +83,9 @@ namespace AutoClicker.Strategies
                                     int i = AutoClickHandlers.Random(0, 20);
                                     if (i == 0)
                                     {
-                                        found = ProcessSpellWithTarget(motionProcessing);
+                                        RECT rect = GetRandomTargetPoint(motionProcessing);
+
+                                        found = ProcessSpellWithTarget(rect);
                                         break;
                                     }
 
@@ -93,20 +96,24 @@ namespace AutoClicker.Strategies
 
                             case AttackStyleType.Range_Attack:
                                 {
+                                    RECT rect = GetRandomTargetPoint(motionProcessing);
+
                                     int i = AutoClickHandlers.Random(0, 20);
                                     if (i == 0)
                                     {
-                                        found = ProcessSpellWithTarget(motionProcessing);
+                                        found = ProcessSpellWithTarget(rect);
                                         break;
                                     }
 
-                                    found = ProcessRangeAttack(motionProcessing);
+                                    found = ProcessRangeAttack(rect);
                                     break;
                                 }
 
                             case AttackStyleType.Spell_With_Target:
                                 {
-                                    found = ProcessSpellWithTarget(motionProcessing);
+                                    RECT rect = GetRandomTargetPoint(motionProcessing);
+
+                                    found = ProcessSpellWithTarget(rect);
                                     break;
                                 }
 
@@ -115,7 +122,7 @@ namespace AutoClicker.Strategies
                                     detector.MotionZones = new Rectangle[] { ImageProcessing.GetRectangleAreaFromCenter(screenCapture, 25) };
                                     if (motionProcessing.ObjectsCount < 5)
                                     {
-                                        continue;
+                                        break;
                                     }
 
                                     AutoClickHandlers.RightClick(_hWnd);
@@ -131,25 +138,33 @@ namespace AutoClicker.Strategies
             }
         }
 
-        private bool ProcessSpellWithTarget(BlobCountingObjectsProcessing motionProcessing)
+        private bool ProcessSpellWithTarget(RECT rect)
         {
-            Point point = GetRandomTargetPoint(motionProcessing);
+            if (!VerifyTarget(rect))
+            {
+                return false;
+            }
+
             AutoClickHandlers.SendKeyDown(_hWnd, Keys.ShiftKey);
-            AutoClickHandlers.RightClickOnPoint(_hWnd, point.ScaleDownToClientPoint(_hWnd));
+            AutoClickHandlers.RightClickOnPoint(_hWnd, rect.Center.ScaleDownToClientPoint(_hWnd));
             AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey, 50);
             return true;
         }
 
-        private bool ProcessRangeAttack(BlobCountingObjectsProcessing motionProcessing)
+        private bool ProcessRangeAttack(RECT rect)
         {
-            Point point = GetRandomTargetPoint(motionProcessing);
+            if (!VerifyTarget(rect))
+            {
+                return false;
+            }
+
             AutoClickHandlers.SendKeyDown(_hWnd, Keys.ShiftKey);
-            AutoClickHandlers.LeftClickOnPoint(_hWnd, point.ScaleDownToClientPoint(_hWnd));
+            AutoClickHandlers.LeftClickOnPoint(_hWnd, rect.Center.ScaleDownToClientPoint(_hWnd));
             AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey, 50);
             return true;
         }
 
-        private static Point GetRandomTargetPoint(BlobCountingObjectsProcessing motionProcessing)
+        private static RECT GetRandomTargetPoint(BlobCountingObjectsProcessing motionProcessing)
         {
             int count = motionProcessing.ObjectsCount;
             int index = 0;
@@ -158,8 +173,7 @@ namespace AutoClicker.Strategies
                 index = AutoClickHandlers.Random(0, count - 1);
             }
 
-            RECT rectangle = motionProcessing.ObjectRectangles[index];
-            return rectangle.Center;
+            return motionProcessing.ObjectRectangles[index];
         }
 
         private bool ProcessMeleeAttack(BlobCountingObjectsProcessing motionProcessing, Point center)
@@ -167,6 +181,7 @@ namespace AutoClicker.Strategies
             List<double> distances = new List<double>();
             double minDistance = 0;
             Point targetPoint = center;
+            RECT minDistanceRectangle = new RECT();
             motionProcessing.ObjectRectangles.ToList().ForEach(x =>
             {
                 RECT rect = x;
@@ -177,10 +192,11 @@ namespace AutoClicker.Strategies
                 {
                     minDistance = distance;
                     targetPoint = rect.Center;
+                    minDistanceRectangle = rect;
                 }
             });
 
-            if (targetPoint.X == center.X && targetPoint.Y == center.Y)
+            if (targetPoint.X == center.X && targetPoint.Y == center.Y || !VerifyTarget(minDistanceRectangle))
             {
                 return false;
             }
@@ -189,6 +205,31 @@ namespace AutoClicker.Strategies
             AutoClickHandlers.LeftClickOnPoint(_hWnd, targetPoint.ScaleDownToClientPoint(_hWnd));
             AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey, 50);
             return true;
+        }
+
+        private bool VerifyTarget(RECT minDistanceRectangle)
+        {
+            BlobCountingObjectsProcessing tagFilterProcessing = new BlobCountingObjectsProcessing(5, 2);
+            MotionDetector tagDetector = new MotionDetector(new TwoFramesDifferenceDetector(), tagFilterProcessing)
+            {
+                MotionZones = new Rectangle[] { new RECT(minDistanceRectangle.Left, 0, minDistanceRectangle.Right, minDistanceRectangle.Bottom) }
+            };
+
+            using (Bitmap backgroundFrame = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
+            {
+                tagDetector.ProcessFrame(backgroundFrame.FilterForBlackTags());
+                AutoClickHandlers.SendMouseToPoint(_hWnd, minDistanceRectangle.Center.ScaleDownToClientPoint(_hWnd));
+                Thread.Sleep(250);
+                using (Bitmap currentFrame = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
+                {
+                    if (tagDetector.ProcessFrame(currentFrame.FilterForBlackTags()) > 0.0002 && tagFilterProcessing.ObjectsCount >= 1)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 

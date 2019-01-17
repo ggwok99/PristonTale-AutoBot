@@ -65,25 +65,25 @@ namespace AutoClicker.Strategies
             MotionDetector detector = new MotionDetector(new TwoFramesDifferenceDetector(), motionProcessing);
             using (Bitmap screenCapture = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
             {
-                detector.MotionZones = new Rectangle[] { ImageProcessing.GetRectangleAreaFromCenter(screenCapture, 85) };
+                detector.MotionZones = new Rectangle[] { ImageProcessing.GetRectangleAreaFromCenter(screenCapture, 75) };
             }
 
             bool found = false;
             AutoClickHandlers.SendKeyPress(_hWnd, MainSkillHotkey);
-            while (!found)
+            while (!found && _mainStream)
             {
                 using (Bitmap screenCapture = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
                 {
-                    if (detector.ProcessFrame(screenCapture) > 0.005 && motionProcessing.ObjectsCount > 0)
+                    if (detector.ProcessFrame(screenCapture.FilterForAutoAttacking()) > 0.002 && motionProcessing.ObjectsCount > 0)
                     {
                         switch (Style)
                         {
                             case AttackStyleType.Melee_Attack:
                                 {
-                                    int i = AutoClickHandlers.Random(0, 20);
+                                    int i = AutoClickHandlers.Random(0, 10);
                                     if (i == 0)
                                     {
-                                        RECT rect = GetRandomTargetPoint(motionProcessing);
+                                        RECT rect = motionProcessing.ObjectRectangles.FirstOrDefault();
 
                                         found = ProcessSpellWithTarget(rect);
                                         break;
@@ -96,9 +96,9 @@ namespace AutoClicker.Strategies
 
                             case AttackStyleType.Range_Attack:
                                 {
-                                    RECT rect = GetRandomTargetPoint(motionProcessing);
+                                    RECT rect = motionProcessing.ObjectRectangles.FirstOrDefault();
 
-                                    int i = AutoClickHandlers.Random(0, 20);
+                                    int i = AutoClickHandlers.Random(0, 10);
                                     if (i == 0)
                                     {
                                         found = ProcessSpellWithTarget(rect);
@@ -111,7 +111,7 @@ namespace AutoClicker.Strategies
 
                             case AttackStyleType.Spell_With_Target:
                                 {
-                                    RECT rect = GetRandomTargetPoint(motionProcessing);
+                                    RECT rect = motionProcessing.ObjectRectangles.FirstOrDefault();
 
                                     found = ProcessSpellWithTarget(rect);
                                     break;
@@ -164,18 +164,6 @@ namespace AutoClicker.Strategies
             return true;
         }
 
-        private static RECT GetRandomTargetPoint(BlobCountingObjectsProcessing motionProcessing)
-        {
-            int count = motionProcessing.ObjectsCount;
-            int index = 0;
-            if (count > 1)
-            {
-                index = AutoClickHandlers.Random(0, count - 1);
-            }
-
-            return motionProcessing.ObjectRectangles[index];
-        }
-
         private bool ProcessMeleeAttack(BlobCountingObjectsProcessing motionProcessing, Point center)
         {
             List<double> distances = new List<double>();
@@ -188,7 +176,7 @@ namespace AutoClicker.Strategies
                 double temp = (rect.Center.X - center.X) ^ 2 + (rect.Center.Y - center.Y) ^ 2;
                 double distance = Math.Sqrt(temp);
                 distances.Add(distance);
-                if (distance <= distances.Min() && distance > 2)
+                if (distance <= distances.Min() && distance > .75)
                 {
                     minDistance = distance;
                     targetPoint = rect.Center;
@@ -219,7 +207,7 @@ namespace AutoClicker.Strategies
             {
                 tagDetector.ProcessFrame(backgroundFrame.FilterForBlackTags());
                 AutoClickHandlers.SendMouseToPoint(_hWnd, minDistanceRectangle.Center.ScaleDownToClientPoint(_hWnd));
-                Thread.Sleep(250);
+                Thread.Sleep(500);
                 using (Bitmap currentFrame = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
                 {
                     if (tagDetector.ProcessFrame(currentFrame.FilterForBlackTags()) > 0.0002 && tagFilterProcessing.ObjectsCount >= 1)

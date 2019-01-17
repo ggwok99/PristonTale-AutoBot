@@ -1,5 +1,4 @@
-﻿using AForge.Vision.Motion;
-using AutoClicker.Controls;
+﻿using AutoClicker.Controls;
 using AutoClicker.Enums;
 using AutoClicker.Helpers;
 using AutoClicker.Models;
@@ -51,7 +50,7 @@ namespace AutoClicker
                 foreach (Profile profile in data.Profiles)
                 {
                     TabPage tp = new TabPage(profile.Name);
-                    UControlContext context = new UControlContext(IntPtr.Zero);
+                    UControlContext context = new UControlContext(IntPtr.Zero, chkFullScreen.Checked);
                     context.LoadData(profile.Data);
                     tp.Controls.Add(context);
                     tabUControl.TabPages.Add(tp);
@@ -269,7 +268,7 @@ namespace AutoClicker
             User32.SetForegroundWindow(Handle);
 
             TabPage tp = new TabPage(name);
-            tp.Controls.Add(new UControlContext(intPtr));
+            tp.Controls.Add(new UControlContext(intPtr, chkFullScreen.Checked));
             tabUControl.TabPages.Add(tp);
         }
 

@@ -80,7 +80,7 @@ namespace AutoClicker.Strategies
                         {
                             case AttackStyleType.Melee_Attack:
                                 {
-                                    int i = AutoClickHandlers.Random(0, 10);
+                                    int i = AutoClickHandlers.Random(0, 5);
                                     if (i == 0)
                                     {
                                         RECT rect = motionProcessing.ObjectRectangles.FirstOrDefault();
@@ -98,7 +98,7 @@ namespace AutoClicker.Strategies
                                 {
                                     RECT rect = motionProcessing.ObjectRectangles.FirstOrDefault();
 
-                                    int i = AutoClickHandlers.Random(0, 10);
+                                    int i = AutoClickHandlers.Random(0, 5);
                                     if (i == 0)
                                     {
                                         found = ProcessSpellWithTarget(rect);

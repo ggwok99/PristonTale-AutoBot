@@ -332,7 +332,7 @@ namespace AutoClicker.Controls
                     form.StatusLabel.Text = "Status: Error! Cannot find stm potion. Please try mystic size.";
                     return;
                 }
-                RECT absoluteSTMRECT = _isFullScreen ? GetAbsoluteRectBySnippingTool(stmRECT) : GetAbsoluteRectWhenNotFullScreen(mpRECT, HWnd);
+                RECT absoluteSTMRECT = _isFullScreen ? GetAbsoluteRectBySnippingTool(stmRECT) : GetAbsoluteRectWhenNotFullScreen(stmRECT, HWnd);
 
                 refillPotData = GetPotRefillData(absoluteLifeRECT, absoluteManaRECT, absoluteSTMRECT);
             }

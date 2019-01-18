@@ -3,6 +3,7 @@ using AutoClicker.Helpers;
 using AutoClicker.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -70,6 +71,7 @@ namespace AutoClicker.Strategies
                     {
                         // Set skill hotkey.
                         AutoClickHandlers.SendKeyPress(_hWnd, buff.Key);
+                        AutoClickHandlers.SendMouseToPoint(_hWnd, new Point(0, 0));
 
                         // Prevent stuck key.
                         AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey);

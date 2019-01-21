@@ -213,12 +213,13 @@ namespace AutoClicker
                 }
             }
 
-            List<CharacterAttributePosition> stm = results.Where(x => x.Type == AttributeType.STM).ToList();
-            if (stm.Count > 1)
+            List<CharacterAttributePosition> stm;
+            do
             {
+                stm = results.Where(x => x.Type == AttributeType.STM).ToList();
                 CharacterAttributePosition mp = results.FirstOrDefault(x => x.Type == AttributeType.MP);
                 results.Remove(stm.FirstOrDefault(x => x.Position.Left > mp.Position.Left));
-            }
+            } while (stm.Count > 1);
 
             results.ForEach(x =>
             {

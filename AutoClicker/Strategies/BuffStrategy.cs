@@ -3,7 +3,6 @@ using AutoClicker.Helpers;
 using AutoClicker.Models;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -63,7 +62,7 @@ namespace AutoClicker.Strategies
 
                 if (buff.DecrementTrueIfCounter0())
                 {
-                    DateTime timeToStop = DateTime.Now.AddSeconds(3);
+                    DateTime timeToStop = DateTime.Now.AddSeconds(1);
 
                     AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey);
 
@@ -71,7 +70,7 @@ namespace AutoClicker.Strategies
                     {
                         // Set skill hotkey.
                         AutoClickHandlers.SendKeyPress(_hWnd, buff.Key);
-                        AutoClickHandlers.SendMouseToPoint(_hWnd, new Point(0, 0));
+                        AutoClickHandlers.SendMouseToPoint(_hWnd, Master.Instance.ScreenResolution.Center);
 
                         // Prevent stuck key.
                         AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey);
@@ -79,6 +78,11 @@ namespace AutoClicker.Strategies
                         // Use skills.
                         AutoClickHandlers.RightClick(_hWnd, 500);
                     } while (timeToStop > DateTime.Now);
+
+                    if (!_mainStream)
+                    {
+                        buff.Counter = 0;
+                    }
                 }
 
                 FireReleaseMainStream();

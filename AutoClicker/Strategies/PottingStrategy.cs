@@ -4,6 +4,7 @@ using AutoClicker.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AutoClicker.Strategies
@@ -96,9 +97,11 @@ namespace AutoClicker.Strategies
                     RequestMainStreamAndUsePot(value, ValueHP, KeyHP);
                     break;
                 case AttributeType.MP:
+                    Thread.Sleep(500);
                     RequestMainStreamAndUsePot(value, ValueMP, KeyMP);
                     break;
                 case AttributeType.STM:
+                    Thread.Sleep(500);
                     RequestMainStreamAndUsePot(value, ValueSTM, KeySTM);
                     break;
                 default:

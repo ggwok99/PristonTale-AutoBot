@@ -1,7 +1,10 @@
-﻿using AutoClicker.Enums;
+﻿using AForge.Vision.Motion;
+using AutoClicker.Enums;
 using AutoClicker.Helpers;
+using AutoClicker.Models;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -57,13 +60,43 @@ namespace AutoClicker.Strategies
                 return;
             }
 
-            AutoClickHandlers.SendKeyDown(_hWnd, Keys.A);
-            for (var i = 0; i < 15; i++)
+            BlobCountingObjectsProcessing motionProcessing = new BlobCountingObjectsProcessing(5, 2);
+            MotionDetector detector = new MotionDetector(new TwoFramesDifferenceDetector(), motionProcessing);
+
+            int i = 0;
+            while (i < 5 && _mainStream)
             {
-                Point point = AutoClickHandlers.GetRandomPointFromCenter(TargetArea);
-                AutoClickHandlers.LeftClickOnPoint(_hWnd, point, 500);
+                using (Bitmap backgroundFrame = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
+                {
+                    detector.MotionZones = new Rectangle[] { ImageProcessing.GetRectangleAreaFromCenter(backgroundFrame, 35) };
+
+                    detector.ProcessFrame(backgroundFrame.FilterForBlackTags());
+
+                    AutoClickHandlers.SendKeyDown(_hWnd, Keys.A);
+
+                    Thread.Sleep(200);
+                    using (Bitmap currentFrame = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
+                    {
+                        if (detector.ProcessFrame(currentFrame.FilterForBlackTags()) > 0.0002 && motionProcessing.ObjectsCount >= 1)
+                        {
+                            RECT rect = motionProcessing.ObjectRectangles.FirstOrDefault();
+                            AutoClickHandlers.LeftClickOnPoint(_hWnd, rect.Center.ScaleDownToClientPoint(_hWnd));
+                            Thread.Sleep(250);
+                        }
+                        else
+                        {
+                            AutoClickHandlers.SendKeyUp(_hWnd, Keys.A);
+                            FireReleaseMainStream();
+                            break;
+                        }
+                    }
+
+                    AutoClickHandlers.SendKeyUp(_hWnd, Keys.A);
+                    Thread.Sleep(200);
+                }
+
+                i++;
             }
-            AutoClickHandlers.SendKeyUp(_hWnd, Keys.A);
 
             FireReleaseMainStream();
         }

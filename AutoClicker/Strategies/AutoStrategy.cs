@@ -1,11 +1,9 @@
 ﻿using AutoClicker.Enums;
-using AutoClicker.Helpers;
 using AutoClicker.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using System.Windows.Forms;
 
 namespace AutoClicker.Strategies
 {

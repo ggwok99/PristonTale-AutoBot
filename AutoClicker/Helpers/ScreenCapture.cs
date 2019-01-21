@@ -2,7 +2,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 
 namespace AutoClicker.Helpers
 {
@@ -95,9 +94,10 @@ namespace AutoClicker.Helpers
         /// <param name="format"></param>
         public static void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
         {
-            Image img = CaptureWindow(handle);
-            img.Save(filename, format);
-            img.Dispose();
+            using (Image img = CaptureWindow(handle))
+            {
+                img.Save(filename, format);
+            }
         }
 
         /// <summary>
@@ -109,9 +109,10 @@ namespace AutoClicker.Helpers
         /// <param name="format"></param>
         public static void CapturePartialWindowToFile(IntPtr handle, RECT rect, string filename, ImageFormat format)
         {
-            Image img = CapturePartialWindow(handle, rect);
-            img.Save(filename, format);
-            img.Dispose();
+            using (Image img = CapturePartialWindow(handle, rect))
+            {
+                img.Save(filename, format);
+            }
         }
 
         /// <summary>
@@ -121,9 +122,10 @@ namespace AutoClicker.Helpers
         /// <param name="format"></param>
         public static void CaptureScreenToFile(string filename, ImageFormat format)
         {
-            Image img = CaptureScreen();
-            img.Save(filename, format);
-            img.Dispose();
+            using (Image img = CaptureScreen())
+            {
+                img.Save(filename, format);
+            }
         }
     }
 }

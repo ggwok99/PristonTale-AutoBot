@@ -133,35 +133,43 @@ namespace AutoClicker.Helpers
 
         public static RECT GetMatchingImageLocation(Bitmap sourceImage, AttributeType type)
         {
-            Bitmap template;
-            Bitmap filtered;
-            switch (type)
+            Bitmap template = null;
+            Bitmap filtered = null;
+            try
             {
-                case AttributeType.HP:
-                    filtered = FilterForRedColor(sourceImage);
-                    template = (Bitmap)System.Drawing.Image.FromFile(TemplateNames.lifePot);
-                    break;
-                case AttributeType.MP:
-                    filtered = FilterForBlueColor(sourceImage);
-                    template = (Bitmap)System.Drawing.Image.FromFile(TemplateNames.manaPot);
-                    break;
-                default:
-                    filtered = FilterForYellowGreenColor(sourceImage);
-                    template = (Bitmap)System.Drawing.Image.FromFile(TemplateNames.stmPot);
-                    break;
+                switch (type)
+                {
+                    case AttributeType.HP:
+                        filtered = FilterForRedColor(sourceImage);
+                        template = (Bitmap)System.Drawing.Image.FromFile(TemplateNames.lifePot);
+                        break;
+                    case AttributeType.MP:
+                        filtered = FilterForBlueColor(sourceImage);
+                        template = (Bitmap)System.Drawing.Image.FromFile(TemplateNames.manaPot);
+                        break;
+                    default:
+                        filtered = FilterForYellowGreenColor(sourceImage);
+                        template = (Bitmap)System.Drawing.Image.FromFile(TemplateNames.stmPot);
+                        break;
+                }
+
+                TemplateMatch matching = TryExhaustiveTemplateMatchingWithExactOneResult(template, filtered);
+                if (matching == null)
+                {
+                    return new RECT();
+                }
+
+                return matching.Rectangle;
             }
-
-            TemplateMatch matching = TryExhaustiveTemplateMatchingWithExactOneResult(template, filtered);
-
-            template.Dispose();
-            filtered.Dispose();
-
-            if (matching == null)
+            catch
             {
                 return new RECT();
             }
-
-            return matching.Rectangle;
+            finally
+            {
+                template.Dispose();
+                filtered.Dispose();
+            }
         }
 
         public static Rectangle GetRectangleAreaFromCenter(Bitmap sourceImage, int targetArea)

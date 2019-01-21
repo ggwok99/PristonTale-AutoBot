@@ -78,13 +78,7 @@ namespace AutoClicker.Strategies
         protected override void DoWork()
         {
             FireRequestMainStream();
-            Thread.Sleep(500);
-
-            if (!_mainStream)
-            {
-                return;
-            }
-
+            
             AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey);
 
             // Close all open tabs

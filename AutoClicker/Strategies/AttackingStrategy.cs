@@ -70,6 +70,7 @@ namespace AutoClicker.Strategies
 
             bool found = false;
             AutoClickHandlers.SendKeyPress(_hWnd, MainSkillHotkey);
+            int trial = 0;
             while (!found && _mainStream)
             {
                 using (Bitmap screenCapture = (Bitmap)ScreenCapture.CaptureWindow(_hWnd))
@@ -134,6 +135,12 @@ namespace AutoClicker.Strategies
                                 break;
                         }
                     }
+                }
+
+                trial++;
+                if (trial > 10)
+                {
+                    break;
                 }
             }
         }

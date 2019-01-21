@@ -77,6 +77,11 @@ namespace AutoClicker.Strategies
 
                         // Use skills.
                         AutoClickHandlers.RightClick(_hWnd, 500);
+
+                        if (!_mainStream)
+                        {
+                            break;
+                        }
                     } while (timeToStop > DateTime.Now);
 
                     if (!_mainStream)

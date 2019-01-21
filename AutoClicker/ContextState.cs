@@ -146,14 +146,21 @@ namespace AutoClicker
         public override void Execute(dynamic potData, dynamic buffData, dynamic atkData, dynamic refillPotData, dynamic pickItemData)
         {
             LoadData(potData, buffData, atkData, refillPotData, pickItemData);
-            _pottingStrategy.Start();
-            _buffStrategy.Start();
-            _attackingStrategy.Start();
-            if (refillPotData != null)
+            try
             {
-                _refillPotStrategy.Start();
+                _pottingStrategy.Start();
+                _buffStrategy.Start();
+                _attackingStrategy.Start();
+                if (refillPotData != null)
+                {
+                    _refillPotStrategy.Start();
+                }
+                _pickItemStrategy.Start();
             }
-            _pickItemStrategy.Start();
+            catch
+            {
+                Execute(potData, buffData, atkData, refillPotData, pickItemData);
+            }
         }
 
         public override void SwitchState(UControlContext context)

@@ -1,15 +1,11 @@
 ﻿using AutoClicker.Controls;
-using AutoClicker.Enums;
 using AutoClicker.Helpers;
 using AutoClicker.Models;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace AutoClicker
@@ -55,8 +51,6 @@ namespace AutoClicker
                     tp.Controls.Add(context);
                     tabUControl.TabPages.Add(tp);
                 }
-
-                Master.Instance.PotPositions = data.Attributes;
             }
         }
 
@@ -98,7 +92,6 @@ namespace AutoClicker
                     ClientName = txtClientName.Text,
                     FullScreenWhenAuto = chkFullScreen.Checked,
                     ScreenResolution = new ScreenResolution(txtScreenResolutionX.Text, txtScreenResolutionY.Text),
-                    Attributes = Master.Instance.PotPositions,
                     Profiles = GetTabsData()
                 };
 
@@ -126,111 +119,6 @@ namespace AutoClicker
                 allData.Add(data);
             }
             return allData;
-        }
-
-        private void BtnAnalyze_Click(object sender, EventArgs e)
-        {
-            IntPtr intPtr;
-            try
-            {
-                intPtr = GetIntPtr();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
-
-            if (chkFullScreen.Checked)
-            {
-                User32.ShowWindow(intPtr, AutoClickHandlers.SW_MAXIMIZED);
-                Thread.Sleep(500);
-            }
-
-            List<CharacterAttributePosition> attributePositions;
-            using (Bitmap screenCapture = (Bitmap)ScreenCapture.CaptureWindow(intPtr))
-            {
-                try
-                {
-                    attributePositions = GetCharacterAttributePositions(screenCapture);
-                }
-                catch
-                {
-                    MessageBox.Show("Error!");
-                    UpdateStatusStripLabel("Please analyze again, cannot detect HP/MP/STM bar.");
-                    return;
-                }
-            }
-
-            CharacterAttributePosition hp = attributePositions.Where(x => x.Type == AttributeType.HP).FirstOrDefault();
-            if (hp == null)
-            {
-                MessageBox.Show("Error!");
-                UpdateStatusStripLabel("Please analyze again, cannot detect HP bar.");
-                return;
-            }
-
-            CharacterAttributePosition mp = attributePositions.Where(x => x.Type == AttributeType.MP).FirstOrDefault();
-            if (mp == null)
-            {
-                MessageBox.Show("Error!");
-                UpdateStatusStripLabel("Please analyze again, cannot detect MP bar.");
-                return;
-            }
-
-            CharacterAttributePosition stm = attributePositions.Where(x => x.Type == AttributeType.STM).FirstOrDefault();
-            if (stm == null || stm.Position.Left > mp.Position.Left)
-            {
-                MessageBox.Show("Error!");
-                UpdateStatusStripLabel("Please analyze again, cannot detect STM bar.");
-                return;
-            }
-
-            Master.Instance.PotPositions = attributePositions;
-            Master.Instance.ScreenResolution = new ScreenResolution(txtScreenResolutionX.Text, txtScreenResolutionY.Text);
-
-            UpdateStatusStripLabel("Successfully Analyzed.");
-
-            if (chkFullScreen.Checked)
-            {
-                User32.SetForegroundWindow(Handle);
-            }
-        }
-
-        private static List<CharacterAttributePosition> GetCharacterAttributePositions(Bitmap bitmap)
-        {
-            List<CharacterAttributePosition> results = new List<CharacterAttributePosition>();
-            using (Bitmap attributeFiltered = ImageProcessing.FilterImageForAttributePositions(bitmap))
-            {
-                List<CharacterAttributePosition> detectedPositions = ImageProcessing.GetCharacterAttributePositions(attributeFiltered);
-                foreach (CharacterAttributePosition attribute in detectedPositions)
-                {
-                    CharacterAttributePosition duplicate = results.FirstOrDefault(x => x.Equals(attribute));
-                    if (duplicate == null)
-                    {
-                        results.Add(attribute);
-                    }
-                }
-            }
-
-            List<CharacterAttributePosition> stm;
-            do
-            {
-                stm = results.Where(x => x.Type == AttributeType.STM).ToList();
-                CharacterAttributePosition mp = results.FirstOrDefault(x => x.Type == AttributeType.MP);
-                results.Remove(stm.FirstOrDefault(x => x.Position.Left > mp.Position.Left));
-            } while (stm.Count > 1);
-
-            results.ForEach(x =>
-            {
-                if (x.Type == AttributeType.STM)
-                {
-                    return;
-                }
-
-                x.Position = new RECT((x.Position.Left + x.Position.Right) / 2, x.Position.Top, x.Position.Right, x.Position.Bottom);
-            });
-            return results;
         }
 
         private void MainForm_Load(object sender, EventArgs e)

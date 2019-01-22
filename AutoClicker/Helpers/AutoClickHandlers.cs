@@ -1,5 +1,4 @@
-﻿using AutoClicker.Enums;
-using AutoClicker.Models;
+﻿using AutoClicker.Models;
 using System;
 using System.Drawing;
 using System.Threading;
@@ -101,25 +100,10 @@ namespace AutoClicker.Helpers
             User32.SendMessage(hWnd, WM_MOUSEMOVE, (IntPtr)0x00000001, (IntPtr)w);
         }
 
-        public static Point GetRandomPointFromCenter(int targetArea)
-        {
-            Point centerPoint = Master.Instance.ScreenResolution.Center;
-            decimal maxMultiplier = 1 + targetArea / 100m;
-            decimal minMultiplier = 1 - targetArea / 100m;
-            int xPosition = Random(centerPoint.X * minMultiplier, centerPoint.X * maxMultiplier);
-            int yPosition = Random(centerPoint.Y * minMultiplier, centerPoint.Y * maxMultiplier);
-            return new Point(xPosition, yPosition);
-        }
-
         public static int Random(decimal min, decimal max)
         {
             Random r = new Random(Guid.NewGuid().GetHashCode());
             return r.Next(Convert.ToInt32(min), Convert.ToInt32(max));
-        }
-
-        internal static void LeftClickOnPoint(IntPtr hWnd, object p)
-        {
-            throw new NotImplementedException();
         }
 
         public static Point ScaleDownToClientPoint(this Point point, IntPtr hWnd)

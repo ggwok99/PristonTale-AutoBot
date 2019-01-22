@@ -1,7 +1,6 @@
 ﻿using AutoClicker.Models;
 using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace AutoClicker.Helpers
 {
@@ -10,15 +9,6 @@ namespace AutoClicker.Helpers
     /// </summary>
     public static class ScreenCapture
     {
-        /// <summary>
-        /// Creates an Image object containing a screen shot of the entire desktop
-        /// </summary>
-        /// <returns></returns>
-        public static Image CaptureScreen()
-        {
-            return CaptureWindow(User32.GetDesktopWindow());
-        }
-
         /// <summary>
         /// Creates an Image object containing a screen shot of a specific window
         /// </summary>
@@ -84,48 +74,6 @@ namespace AutoClicker.Helpers
             // free up the Bitmap object
             GDI32.DeleteObject(hBitmap);
             return img;
-        }
-
-        /// <summary>
-        /// Captures a screen shot of a specific window, and saves it to a file
-        /// </summary>
-        /// <param name="handle"></param>
-        /// <param name="filename"></param>
-        /// <param name="format"></param>
-        public static void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
-        {
-            using (Image img = CaptureWindow(handle))
-            {
-                img.Save(filename, format);
-            }
-        }
-
-        /// <summary>
-        /// Captures a screen shot of a specific window with partial view, and saves it to a file
-        /// </summary>
-        /// <param name="handle"></param>
-        /// <param name="rect"></param>
-        /// <param name="filename"></param>
-        /// <param name="format"></param>
-        public static void CapturePartialWindowToFile(IntPtr handle, RECT rect, string filename, ImageFormat format)
-        {
-            using (Image img = CapturePartialWindow(handle, rect))
-            {
-                img.Save(filename, format);
-            }
-        }
-
-        /// <summary>
-        /// Captures a screen shot of the entire desktop, and saves it to a file
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="format"></param>
-        public static void CaptureScreenToFile(string filename, ImageFormat format)
-        {
-            using (Image img = CaptureScreen())
-            {
-                img.Save(filename, format);
-            }
         }
     }
 }

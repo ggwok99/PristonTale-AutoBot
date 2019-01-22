@@ -1,10 +1,6 @@
 ﻿using AutoClicker.Enums;
 using AutoClicker.Helpers;
-using AutoClicker.Models;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace AutoClicker.Strategies
@@ -32,9 +28,17 @@ namespace AutoClicker.Strategies
             KeySTM = data.STM.Key;
         }
 
+        protected float _maxHP;
+        protected float _maxMP;
+        protected float _maxSTM;
+
+        protected const int _hpMemAddress = 0x03324D50;
+        protected const int _mpMemAddress = 0x03324D54;
+        protected const int _stmMemAddress = 0x03324D58;
+
         protected override double TimeOutInSecond()
         {
-            return .15;
+            return .1;
         }
 
         public override MainStreamState ThisState()
@@ -65,28 +69,36 @@ namespace AutoClicker.Strategies
 
         protected override void DoWork()
         {
-            using (Bitmap b = new Bitmap(ScreenCapture.CaptureWindow(_hWnd)))
-            {
-                foreach (CharacterAttributePosition pot in Master.Instance.PotPositions)
-                {
-                    Rectangle cloneRect = new Rectangle(pot.Position.Location, pot.Position.Size);
-                    using (Bitmap cloneBitmap = b.Clone(cloneRect, b.PixelFormat))
-                    {
-                        decimal missingPixels = 0m;
-                        List<Color> colors = ImageProcessing.ReadBitmap(cloneBitmap);
-                        colors.ForEach(color =>
-                        {
-                            if (color != GetColorByAttributeType(pot.Type))
-                            {
-                                missingPixels++;
-                            }
-                        });
+            User32.GetWindowThreadProcessId(_hWnd, out uint processId);
+            IntPtr processHandle = Kernel32.OpenProcess(Kernel32.PROCESS_VM_READ | Kernel32.PROCESS_VM_WRITE | Kernel32.PROCESS_VM_OPERATION, false, (int)processId);
 
-                        decimal value = 100 - (missingPixels / colors.Count * 100);
-                        SendKeyPressIfNeeded(pot.Type, value);
-                    }
-                }
+            byte[] buffer = new byte[4];
+            Kernel32.ReadProcessMemory((int)processHandle, _hpMemAddress, buffer, buffer.Length, out int bytesRead);
+            float currentHP = BitConverter.ToSingle(buffer, 0);
+            if (currentHP > _maxHP)
+            {
+                _maxHP = currentHP;
             }
+            decimal percentageHP = (decimal)currentHP / (decimal)_maxHP * 100;
+            SendKeyPressIfNeeded(AttributeType.HP, percentageHP);
+
+            Kernel32.ReadProcessMemory((int)processHandle, _mpMemAddress, buffer, buffer.Length, out bytesRead);
+            float currentMP = BitConverter.ToSingle(buffer, 0);
+            if (currentMP > _maxMP)
+            {
+                _maxMP = currentMP;
+            }
+            decimal percentageMP = (decimal)currentMP / (decimal)_maxMP * 100;
+            SendKeyPressIfNeeded(AttributeType.MP, percentageMP);
+
+            Kernel32.ReadProcessMemory((int)processHandle, _stmMemAddress, buffer, buffer.Length, out bytesRead);
+            float currentSTM = BitConverter.ToSingle(buffer, 0);
+            if (currentSTM > _maxSTM)
+            {
+                _maxSTM = currentSTM;
+            }
+            decimal percentageSTM = (decimal)currentSTM / (decimal)_maxSTM * 100;
+            SendKeyPressIfNeeded(AttributeType.STM, percentageSTM);
         }
 
         private void SendKeyPressIfNeeded(AttributeType type, decimal value)
@@ -97,11 +109,9 @@ namespace AutoClicker.Strategies
                     RequestMainStreamAndUsePot(value, ValueHP, KeyHP);
                     break;
                 case AttributeType.MP:
-                    Thread.Sleep(500);
                     RequestMainStreamAndUsePot(value, ValueMP, KeyMP);
                     break;
                 case AttributeType.STM:
-                    Thread.Sleep(500);
                     RequestMainStreamAndUsePot(value, ValueSTM, KeySTM);
                     break;
                 default:
@@ -119,21 +129,6 @@ namespace AutoClicker.Strategies
                 AutoClickHandlers.SendKeyPress(_hWnd, key, 50);
 
                 FireReleaseMainStream();
-            }
-        }
-
-        private Color GetColorByAttributeType(AttributeType type)
-        {
-            switch (type)
-            {
-                case AttributeType.HP:
-                    return Color.Red;
-                case AttributeType.MP:
-                    return Color.Blue;
-                case AttributeType.STM:
-                    return Color.GreenYellow;
-                default:
-                    return Color.DarkGray;
             }
         }
     }

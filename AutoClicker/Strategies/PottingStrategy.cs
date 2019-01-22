@@ -36,6 +36,14 @@ namespace AutoClicker.Strategies
             KeySTM = data.STM.Key;
         }
 
+        protected float _maxHP;
+        protected float _maxMP;
+        protected float _maxSTM;
+
+        protected const int _hpMemAddress = 0x03324D50;
+        protected const int _mpMemAddress = 0x03324D54;
+        protected const int _stmMemAddress = 0x03324D58;
+
         protected override double TimeOutInSecond()
         {
             return .1;

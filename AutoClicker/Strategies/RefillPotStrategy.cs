@@ -3,7 +3,6 @@ using AutoClicker.Helpers;
 using AutoClicker.Models;
 using System;
 using System.Drawing;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace AutoClicker.Strategies
@@ -78,7 +77,7 @@ namespace AutoClicker.Strategies
         protected override void DoWork()
         {
             FireRequestMainStream();
-            
+
             AutoClickHandlers.SendKeyUp(_hWnd, Keys.ShiftKey);
 
             // Close all open tabs

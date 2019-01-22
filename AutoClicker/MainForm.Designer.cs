@@ -45,7 +45,6 @@
             this.lbxUControl = new System.Windows.Forms.ListBox();
             this.btnRefreshProcess = new System.Windows.Forms.Button();
             this.lbxProcess = new System.Windows.Forms.ListBox();
-            this.btnAnalyze = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.grpGeneral = new System.Windows.Forms.GroupBox();
             this.chkFullScreen = new System.Windows.Forms.CheckBox();
@@ -131,7 +130,6 @@
             // 
             this.systemPanel.Controls.Add(this.tabUControl);
             this.systemPanel.Controls.Add(this.grpData);
-            this.systemPanel.Controls.Add(this.btnAnalyze);
             this.systemPanel.Controls.Add(this.btnSave);
             this.systemPanel.Controls.Add(this.grpGeneral);
             this.systemPanel.Location = new System.Drawing.Point(0, 39);
@@ -212,16 +210,6 @@
             this.lbxProcess.Name = "lbxProcess";
             this.lbxProcess.Size = new System.Drawing.Size(174, 76);
             this.lbxProcess.TabIndex = 1;
-            // 
-            // btnAnalyze
-            // 
-            this.btnAnalyze.Location = new System.Drawing.Point(12, 546);
-            this.btnAnalyze.Name = "btnAnalyze";
-            this.btnAnalyze.Size = new System.Drawing.Size(150, 46);
-            this.btnAnalyze.TabIndex = 3;
-            this.btnAnalyze.Text = "Analyze";
-            this.btnAnalyze.UseVisualStyleBackColor = true;
-            this.btnAnalyze.Click += new System.EventHandler(this.BtnAnalyze_Click);
             // 
             // btnSave
             // 
@@ -370,7 +358,6 @@
         private System.Windows.Forms.Label lblResolution;
         private System.Windows.Forms.Label lblClientName;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.Button btnAnalyze;
         private System.Windows.Forms.GroupBox grpData;
         private System.Windows.Forms.ListBox lbxProcess;
         private System.Windows.Forms.Button btnRefreshProcess;

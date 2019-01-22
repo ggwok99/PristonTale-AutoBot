@@ -93,15 +93,14 @@
     <Compile Include="Enums\MainStreamState.cs" />
     <Compile Include="Enums\MouseClickType.cs" />
     <Compile Include="Helpers\GDI32.cs" />
+    <Compile Include="Helpers\Kernel32.cs" />
     <Compile Include="Helpers\User32.cs" />
     <Compile Include="Models\CustomDataObject.cs" />
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Strategies\PickItemStrategy.cs" />
     <Compile Include="Strategies\RefillPotStrategy.cs" />
     <Compile Include="Models\BuffItem.cs" />
-    <Compile Include="Models\CharacterAttributePosition.cs" />
     <Compile Include="Collections\Env.cs" />
-    <Compile Include="Helpers\ColorDetection.cs" />
     <Compile Include="Helpers\ImageProcessing.cs" />
     <Compile Include="Strategies\AttackingStrategy.cs" />
     <Compile Include="Enums\AttackStyleType.cs" />
@@ -119,7 +118,6 @@
     <Compile Include="Models\PotPosition.cs" />
     <Compile Include="Models\RECT.cs" />
     <Compile Include="Helpers\ScreenCapture.cs" />
-    <Compile Include="Helpers\KeyboardHook.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

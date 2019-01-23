@@ -7,14 +7,6 @@ namespace AutoClicker.Strategies
 {
     public abstract class PottingStrategy : AutoStrategy
     {
-        protected float _maxHP;
-        protected float _maxMP;
-        protected float _maxSTM;
-
-        protected const int _hpMemAddress = 0x03324D50;
-        protected const int _mpMemAddress = 0x03324D54;
-        protected const int _stmMemAddress = 0x03324D58;
-
         protected int ValueHP { get; set; }
         protected Keys KeyHP { get; set; }
 
@@ -62,6 +54,14 @@ namespace AutoClicker.Strategies
 
     public class ActivePottingStrategy : PottingStrategy
     {
+        private float _maxHP;
+        private float _maxMP;
+        private float _maxSTM;
+
+        private const int _hpMemAddress = 0x03324D50;
+        private const int _mpMemAddress = 0x03324D54;
+        private const int _stmMemAddress = 0x03324D58;
+
         public ActivePottingStrategy(IntPtr intPtr)
         {
             Initial(intPtr);
@@ -82,6 +82,8 @@ namespace AutoClicker.Strategies
 
             if (_maxHP == 0)
             {
+                _maxMP = 0;
+                _maxSTM = 0;
                 return;
             }
 
@@ -98,6 +100,8 @@ namespace AutoClicker.Strategies
 
             if (_maxMP == 0)
             {
+                _maxHP = 0;
+                _maxSTM = 0;
                 return;
             }
 
@@ -114,6 +118,8 @@ namespace AutoClicker.Strategies
 
             if (_maxSTM == 0)
             {
+                _maxHP = 0;
+                _maxMP = 0;
                 return;
             }
 
